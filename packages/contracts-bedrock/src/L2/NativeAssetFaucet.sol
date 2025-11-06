@@ -60,11 +60,11 @@ contract NativeAssetFaucet {
     /// @notice Permissionless claim function - anyone can claim per block
     /// @param _to The address to receive the minted tokens
     function claim(address _to) external {
-        if (lastClaimBlock[msg.sender] == block.number) {
+        if (lastClaimBlock[_to] == block.number) {
             revert NativeAssetFaucet_BlockLimitReached();
         }
 
-        lastClaimBlock[msg.sender] = block.number;
+        lastClaimBlock[_to] = block.number;
 
         ILiquidityController(Predeploys.LIQUIDITY_CONTROLLER).mint(_to, permissionlessAmount);
     }

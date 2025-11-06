@@ -402,10 +402,10 @@ func defaultIntent(root string, loc *artifacts.Locator, deployer common.Address,
 					Challenger:        common.HexToAddress("0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65"),
 				},
 				CustomGasToken: state.CustomGasToken{
-					Enabled:          false,
-					Name:             "",
-					Symbol:           "",
-					InitialLiquidity: (*hexutil.Big)(big.NewInt(0)),
+					Enabled:          true,
+					Name:             "TestToken",
+					Symbol:           "TST",
+					InitialLiquidity: (*hexutil.Big)(new(big.Int).Mul(big.NewInt(1000000), big.NewInt(1e18))),
 				},
 				AdditionalDisputeGames: []state.AdditionalDisputeGame{
 					{
