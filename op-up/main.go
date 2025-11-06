@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"math/big"
 	"net/http"
 	"os"
 	"os/signal"
@@ -150,6 +151,7 @@ func runOpUp(ctx context.Context, stderr io.Writer, opUpDir string) error {
 			sysgo.WithEmbeddedContractSources(),
 			sysgo.WithCommons(ids.L1.ChainID()),
 			sysgo.WithPrefundedL2(ids.L1.ChainID(), ids.L2.ChainID()),
+			sysgo.WithCustomGasToken(true, "TestToken", "TST", new(big.Int).Mul(big.NewInt(1000000), big.NewInt(1e18))),
 			sysgo.WithL1ProxyAdminOwner(l1ProxyAdminOwner),
 			sysgo.WithL2ProxyAdminOwner(l2ProxyAdminOwner),
 		),
