@@ -51,11 +51,11 @@ sysgo.WithDeployerOptions(
 # Navigate to op-up directory
 cd op-up
 
-# Build op-up
-go build
+just clean
 
-# Clean previous data (if exists)
-rm -rf ~/.op-up
+just artifacts
+
+just op-up
 
 # Start op-up
 ./op-up
