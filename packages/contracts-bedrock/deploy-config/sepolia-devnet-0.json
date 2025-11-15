@@ -88,5 +88,6 @@
   "useCustomGasToken": false,
   "gasPayingTokenName": "",
   "gasPayingTokenSymbol": "",
-  "nativeAssetLiquidityAmount": null
+  "nativeAssetLiquidityAmount": null,
+  "liquidityControllerOwner": "0x8c20c40180751d93e939dddee3517ae0d1ebead2"
 }
