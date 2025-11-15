@@ -11,7 +11,6 @@ import { ForgeArtifacts, StorageSlot } from "scripts/libraries/ForgeArtifacts.so
 import { Constants } from "src/libraries/Constants.sol";
 import { EIP1967Helper } from "test/mocks/EIP1967Helper.sol";
 import { Features } from "src/libraries/Features.sol";
-import { DevFeatures } from "src/libraries/DevFeatures.sol";
 
 // Interfaces
 import { IResourceMetering } from "interfaces/L1/IResourceMetering.sol";
@@ -165,7 +164,8 @@ contract SystemConfig_Initialize_Test is SystemConfig_TestInit {
                 l1ERC721Bridge: address(0),
                 l1StandardBridge: address(0),
                 optimismPortal: address(0),
-                optimismMintableERC20Factory: address(0)
+                optimismMintableERC20Factory: address(0),
+                delayedWETH: address(0)
             }),
             _l2ChainId: 1234,
             _superchainConfig: ISuperchainConfig(address(0))
@@ -221,7 +221,8 @@ contract SystemConfig_Initialize_Test is SystemConfig_TestInit {
                 l1ERC721Bridge: address(0),
                 l1StandardBridge: address(0),
                 optimismPortal: address(0),
-                optimismMintableERC20Factory: address(0)
+                optimismMintableERC20Factory: address(0),
+                delayedWETH: address(0)
             }),
             _l2ChainId: 1234,
             _superchainConfig: ISuperchainConfig(address(0))
@@ -255,7 +256,8 @@ contract SystemConfig_StartBlock_Test is SystemConfig_TestInit {
                 l1ERC721Bridge: address(0),
                 l1StandardBridge: address(0),
                 optimismPortal: address(0),
-                optimismMintableERC20Factory: address(0)
+                optimismMintableERC20Factory: address(0),
+                delayedWETH: address(0)
             }),
             _l2ChainId: 1234,
             _superchainConfig: ISuperchainConfig(address(0))
@@ -286,7 +288,8 @@ contract SystemConfig_StartBlock_Test is SystemConfig_TestInit {
                 l1ERC721Bridge: address(0),
                 l1StandardBridge: address(0),
                 optimismPortal: address(0),
-                optimismMintableERC20Factory: address(0)
+                optimismMintableERC20Factory: address(0),
+                delayedWETH: address(0)
             }),
             _l2ChainId: 1234,
             _superchainConfig: ISuperchainConfig(address(0))
@@ -583,7 +586,8 @@ contract SystemConfig_SetResourceConfig_Test is SystemConfig_TestInit {
                 l1ERC721Bridge: address(0),
                 l1StandardBridge: address(0),
                 optimismPortal: address(0),
-                optimismMintableERC20Factory: address(0)
+                optimismMintableERC20Factory: address(0),
+                delayedWETH: address(0)
             }),
             _l2ChainId: 1234,
             _superchainConfig: ISuperchainConfig(address(0))
@@ -934,13 +938,13 @@ contract SystemConfig_SetDAFootprintGasScalar_Test is SystemConfig_TestInit {
 contract SystemConfig_IsCustomGasToken_Test is SystemConfig_TestInit {
     /// @notice Tests that `isCustomGasToken` returns the correct value.
     function test_isCustomGasToken_enabled_succeeds() external {
-        skipIfDevFeatureDisabled(DevFeatures.CUSTOM_GAS_TOKEN);
+        skipIfSysFeatureDisabled(Features.CUSTOM_GAS_TOKEN);
         assertTrue(systemConfig.isCustomGasToken());
     }
 
     /// @notice Tests that `isCustomGasToken` returns the correct value.
     function test_isCustomGasToken_disabled_succeeds() external {
-        skipIfDevFeatureEnabled(DevFeatures.CUSTOM_GAS_TOKEN);
+        skipIfSysFeatureEnabled(Features.CUSTOM_GAS_TOKEN);
         assertFalse(systemConfig.isCustomGasToken());
     }
 }
