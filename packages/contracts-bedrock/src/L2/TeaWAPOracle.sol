@@ -121,15 +121,16 @@ contract TeaWAPOracle {
 
         // Return the price, or the fallback price if the price is out of range.
         uint256 price = abi.decode(returndata, (uint256));
+
+        // Price is in GWEI because that was the quote requested.
+        // Multiply by GWEI to convert to 18 decimals (making sure no overflow).
+        uint256 oldPrice = price;
+        unchecked { price = price * GWEI; }
+        if (price / GWEI != oldPrice) return (false, fallbackPrice);
+
         if (price == 0 || price > type(uint160).max) {
             // If the price is zero, return the fallback price.
             if (price == 0) return (false, fallbackPrice);
-
-            // Price is in GWEI because that was the quote requested.
-            // Multiply by GWEI to convert to 18 decimals (making sure no overflow).
-            uint256 oldPrice = price;
-            unchecked { price = price * GWEI; }
-            if (price / GWEI != oldPrice) return (false, fallbackPrice);
 
             // If the new price is greater than the max uint160, return the fallback price.
             if (price > type(uint160).max) return (false, fallbackPrice);
@@ -152,6 +153,7 @@ contract TeaWAPOracle {
         require(_oracle != address(0), "TeaWAPOracle: zero address");
         require(_twapObservations > 0, "TeaWAPOracle: zero observations");
         require(_minWethBalance > 0, "TeaWAPOracle: zero min WETH balance");
+        require(msg.sender == Ownable(Predeploys.PROXY_ADMIN).owner());
 
         _setOracleConfig(_twapObservations, _minWethBalance, _oracle);
 
