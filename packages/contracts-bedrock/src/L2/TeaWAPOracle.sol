@@ -30,10 +30,6 @@ contract TeaWAPOracle {
     ///         and the fallback price is not set.
     uint160 public constant BACKUP_TEA_WEI_PER_ETH = 1_500_000e18;
 
-    /// @notice The minimum WETH balance of the pool needed for the oracle to be valid.
-    /// @dev If the pool has less than this balance, it may be too easy to manipulate.
-    uint256 public constant MIN_WETH_BALANCE = 1e18;
-
     /// @notice The maximum amount of time we will allow failed oracle calls before
     ///         setting the storage value to the fallback.
     uint256 public constant MAX_ORACLE_DOWNTIME = 5 minutes;
@@ -66,6 +62,7 @@ contract TeaWAPOracle {
     /// @return price The price of 1 Ether in $TEA (18 decimals)
     /// @dev If the oracle is not set, we will return fallback price (also in 18 decimals).
     /// @dev If the fallback price is also not set, we will return a hardcoded backup.
+    /// @dev This function exists for L1 Data Cost calculations, and should not be trusted externally.
     function teaPerETH() public view returns (bool, uint160) {
         // Load oracle config from storage.
         (
