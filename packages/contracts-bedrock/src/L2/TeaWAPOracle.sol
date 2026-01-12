@@ -46,6 +46,37 @@ contract TeaWAPOracle {
     /// @notice Emitted when the fallback price is updated
     event FallbackPriceUpdated(uint256 price);
 
+    /// @notice The owner of the contract. If zero will default to PROXY_ADMIN.owner()
+    address public owner;
+
+
+    /// @notice Emitted when ownership is transferred
+    /// @param previousOwner The previous owner address
+    /// @param newOwner The new owner address
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /// @notice Checks if sender is the owner or owner is not set and sender is proxy admin owner
+    modifier onlyOwner() {
+        _onlyOwner();
+        _;
+    }
+
+    function _onlyOwner() internal view {
+        if (owner == address(0)) {
+            require(msg.sender == Ownable(Predeploys.PROXY_ADMIN).owner(), "TeaWAPOracle: admin only");
+        } else {
+            require(msg.sender == owner, "TeaWAPOracle: owner only");
+        }
+    }
+
+    /// @notice Transfers ownership to new owner or back to proxy admin owner
+    /// @param newOwner New owner address. If zero proxy admin owner will be new owner
+    function transferOwnership(address newOwner) external onlyOwner {
+        address oldOwner = owner;
+        owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
+    }
+
     ////////////////////////////////
     ///// ORACLE FUNCTIONALITY /////
     ////////////////////////////////
@@ -146,11 +177,10 @@ contract TeaWAPOracle {
         uint16 _twapObservations,
         uint80 _minWethBalance,
         address _oracle
-    ) external {
+    ) external onlyOwner {
         require(_oracle != address(0), "TeaWAPOracle: zero address");
         require(_twapObservations > 0, "TeaWAPOracle: zero observations");
         require(_minWethBalance > 0, "TeaWAPOracle: zero min WETH balance");
-        require(msg.sender == Ownable(Predeploys.PROXY_ADMIN).owner());
 
         _setOracleConfig(_twapObservations, _minWethBalance, _oracle);
 
@@ -159,8 +189,7 @@ contract TeaWAPOracle {
 
     /// @param _price Fallback price to use if oracle fails
     /// @dev Price should be set in wei of $TEA per 18 decimals of ETH
-    function setFallbackPrice(uint160 _price) external {
-        require(msg.sender == Ownable(Predeploys.PROXY_ADMIN).owner(), "TeaWAPOracle: admin only");
+    function setFallbackPrice(uint160 _price) external onlyOwner {
         require(_price > 0, "TeaWAPOracle: zero fallback price");
 
         _setFallbackPrice(_price);
